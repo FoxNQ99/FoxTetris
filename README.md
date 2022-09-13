@@ -16,11 +16,15 @@ i want try my coding skills with Tetris Game, this project will use vanilla Fron
 
 # Change Logs:
 
-- 13/09/2022 :
-  - Add Classes :
+<details open>
+<summary>13/09/2022</summary>
+<br>
+- Add Classes :
     - Point
     - Box
     - Color
     - TetrisBase
+</details>
+
 
 # TodoList
