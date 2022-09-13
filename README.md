@@ -6,8 +6,7 @@ i want try my coding skills with Tetris Game, this project will use vanilla Fron
 
 - Width : 25
 - Height : 15
-- Time delay on step : 400ms
-  You can change this in <b>env.js</b> file.
+- Time delay on step : 400ms You can change this in <b>env.js</b> file.
 
 # Key Binding
 
@@ -16,5 +15,12 @@ i want try my coding skills with Tetris Game, this project will use vanilla Fron
 - [Space,R] - Rotate Box
 
 # Change Logs:
+
+- 13/09/2022 :
+  - Add Classes :
+    - Point
+    - Box
+    - Color
+    - TetrisBase
 
 # TodoList
