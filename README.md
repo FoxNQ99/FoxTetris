@@ -19,12 +19,11 @@ i want try my coding skills with Tetris Game, this project will use vanilla Fron
 <details open>
 <summary>13/09/2022</summary>
 <br>
-- Add Classes :
-    - Point
-    - Box
-    - Color
-    - TetrisBase
+- Add Classes :</br>
+    - Point</br>
+    - Box</br>
+    - Color</br>
+    - TetrisBase</br>
 </details>
-
 
 # TodoList
