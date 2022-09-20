@@ -1,4 +1,4 @@
-import CusErr from "../ExtentionsMethods/CustomERR.js";
+import CusErr from "../services/CustomERR.js";
 import Point from "./Point.js";
 
 ("use strict");

@@ -9,7 +9,7 @@ const ENV = {
 		gameContainer: "game-container",
 		mapContainer: "map-container",
 		menuContainer: "menu-container",
-
+		gameInfoContainer: "game-info",
 		infoContainer: "info-container",
 		infoDesc: "info-desc",
 		infoContent: "info-content",
@@ -24,10 +24,10 @@ const ENV = {
 		menuInput: "txbUserName",
 		menuHelloString: "lbHello",
 		menuStartBtn: "btnStart",
-		menuStartBtnBig: "btnStartBig",
-
+		mapContainer: "mapContainer",
 		scoreLabel: "lbScore",
 		playerNameLabel: "lbUsername",
+		nextBox: "nextBox",
 	},
 	content: {
 		title: "JS Tetris Game",
@@ -35,11 +35,9 @@ const ENV = {
 		lose: "You Lose!!, Thank you for Playing",
 		won: "Wow, You is not a Hunman",
 		menuInput: "What Your Name, Hero?",
+		descScore: " Score ",
+		descNextBox: " Next Box ",
 	},
-	hello: {
-		morning: ["Have a Nice Day, ", "Nice To See You, ", "Thank You Plaing My Game"],
-		midday: ['Or should I say " afternoon "? ', "Are You OK? ", "How's It Going? "],
-		evening: ["uhm ... Hi, ", "Good Evening, ", "Are You OK? "],
-	},
+	hello: ["Hello, ", "Hi, ", "Thank You for Playing My Game, ", "Have a Nice Day, ", "Do You Like My Game, "],
 };
 export default ENV;

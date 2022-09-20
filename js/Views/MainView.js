@@ -1,9 +1,10 @@
-"use strict";
-
-import ENV from "../env.js";
-import CusErr from "../ExtentionsMethods/CustomERR.js";
+import ENV from "../configs/env.js";
+import CusErr from "../services/CustomERR.js";
 import Utils from "../services/Utils.js";
-import Menu from "./Menu.js";
+import GameContainer from "./GameContainer.js";
+import Menu from "./MenuContainer.js";
+
+("use strict");
 
 class View {
 	constructor() {
@@ -13,6 +14,8 @@ class View {
 			return;
 		}
 		this.Root = RootElement;
+		this.menu = new Menu();
+		this.game = new GameContainer();
 	}
 	clearRoot() {
 		if (this.Root) {
@@ -27,8 +30,13 @@ class View {
 			this.Root.append(element);
 		}
 	}
-	showMenu(username, callback) {
-		this.renderToRoot(new Menu(username, callback), true);
+	renderMenu() {
+		this.game.hide();
+		this.menu.show();
+	}
+	renderGame() {
+		this.menu.hide();
+		this.game.show();
 	}
 }
 export default View;

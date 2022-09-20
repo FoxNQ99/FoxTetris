@@ -1,5 +1,5 @@
-import ENV from "../env.js";
-import { Color } from "../services/Color.js";
+import ENV from "../configs/env.js";
+import { Color } from "./Color.js";
 
 ("use strict");
 
@@ -15,8 +15,7 @@ class FRandom {
 		return Colors[num];
 	}
 	static PickRandomHello() {
-		let time = parseInt(new Date().getHours());
-		let helloArray = time > 5 ? (time < 11 ? ENV.hello.morning : time < 13 ? ENV.hello.midday : ENV.hello.evening) : ENV.hello.evening;
+		let helloArray = ENV.hello;
 		let index = this.Number(helloArray.length);
 		return helloArray[index] || "Hello";
 	}
