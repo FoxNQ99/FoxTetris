@@ -17,6 +17,11 @@ i want try my coding skills with Tetris Game, this project will use vanilla Fron
 # Change Logs:
 
 <details open>
+<summary>20/09/2022</summary>
+<br>
+* Done Base View of Game, Add CusElement (Base Of other Views Class)
+</details>
+<details open>
 <summary>13/09/2022</summary>
 <br>
 - Add Classes :</br>
