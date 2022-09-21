@@ -1,13 +1,9 @@
 const ENV = {
-	mapSize: {
-		width: 15,
-		height: 25,
-	},
 	className: {
 		point: "game-point",
 		activePoint: "active",
 		gameContainer: "game-container",
-		mapContainer: "map-container",
+		mapContainer: "game-map",
 		menuContainer: "menu-container",
 		gameInfoContainer: "game-info",
 		infoContainer: "info-container",
@@ -21,12 +17,13 @@ const ENV = {
 		root: "root",
 		view: "mainView",
 		menu: "mainMenu",
-		menuInput: "txbUserName",
+		txbUserName: "txbUserName",
 		menuHelloString: "lbHello",
 		menuStartBtn: "btnStart",
 		mapContainer: "mapContainer",
-		scoreLabel: "lbScore",
-		playerNameLabel: "lbUsername",
+		lbScore: "lbScore",
+		lbUsername: "lbUsername",
+		lbHello: "lbHello",
 		nextBox: "nextBox",
 	},
 	content: {
@@ -40,4 +37,5 @@ const ENV = {
 	},
 	hello: ["Hello, ", "Hi, ", "Thank You for Playing My Game, ", "Have a Nice Day, ", "Do You Like My Game, "],
 };
+
 export default ENV;

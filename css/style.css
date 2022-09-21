@@ -1,0 +1,39 @@
+@import url("https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap");
+
+:root {
+	--border: 2px dashed cyan;
+}
+
+html {
+	font-family: "Press Start 2P";
+	background-color: gray;
+}
+* {
+	box-sizing: border-box;
+}
+#root {
+}
+
+.game-point {
+	position: absolute;
+	border: 2px solid white;
+	border-radius: 20%;
+}
+
+.game-container {
+	position: relative;
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.game-container > div {
+	border: var(--border);
+}
+.game-map {
+	display: inline-block;
+	padding: 2px;
+}
+.game-info {
+	display: inline-block;
+	position: absolute;
+}

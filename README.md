@@ -6,7 +6,7 @@ i want try my coding skills with Tetris Game, this project will use vanilla Fron
 
 - Width : 25
 - Height : 15
-- Time delay on step : 400ms You can change this in <b>env.js</b> file.
+- Time delay on step : 400ms You can change this in <b>configs/env.js</b> file.
 
 # Key Binding
 

@@ -41,6 +41,17 @@ class Box {
 		}
 		return map;
 	}
+	getActivePoints() {
+		let activePoints = [];
+		this.map.map(arr =>
+			arr.map(item => {
+				if (item.isActive()) {
+					activePoints.push(item);
+				}
+			}),
+		);
+		return activePoints;
+	}
 	getPoint(X, Y) {
 		return this.map[X]?.[Y] || undefined;
 	}
@@ -51,9 +62,11 @@ class Box {
 	isActive(X, Y) {
 		return this.getPoint(X, Y)?.isActive() || false;
 	}
-	setActive(X, Y, isActive) {
+	setActive(X, Y, isActive, color) {
 		if (!this.isNull(X, Y)) {
-			this.map[X][Y].setActive(isActive);
+			let item = this.map[X][Y];
+			item.setActive(isActive);
+			color ? item.setColor(color) : 0;
 		}
 	}
 	isArray2D(arr2D) {

@@ -3,10 +3,14 @@ import Point from "./Point.js";
 
 ("use strict");
 
-class TetrisBox extends Box {
+class TetrisBase extends Box {
 	constructor(size, color) {
 		super(size, color);
 		this.MapPosition = {
+			X: 0,
+			Y: 0,
+		};
+		this.tmpMapPosition = {
 			X: 0,
 			Y: 0,
 		};
@@ -19,7 +23,7 @@ class TetrisBox extends Box {
 	getPoint(X, Y) {
 		return this.getRealPoint(X, Y);
 	}
-	getActivePointsOnMap(arr2D) {
+	getActivePointsOnMap(arr2D, mapPosition) {
 		let self = this;
 		let activePoints = [];
 		if (this.isArray2D(arr2D)) {
@@ -27,8 +31,8 @@ class TetrisBox extends Box {
 				arr.map(item => {
 					if (item.isActive()) {
 						let position = item.getPosition();
-						let XMap = position.X + self.MapPosition.X;
-						let YMap = position.Y + self.MapPosition.Y;
+						let XMap = position.X + mapPosition.X;
+						let YMap = position.Y + mapPosition.Y;
 						let modifierPoint = new Point(XMap, YMap, true, self.color);
 						activePoints.push(modifierPoint);
 					}
@@ -38,7 +42,7 @@ class TetrisBox extends Box {
 		return activePoints;
 	}
 	getActivePoints() {
-		return this.getActivePointsOnMap(this.map);
+		return this.getActivePointsOnMap(this.map, this.MapPosition);
 	}
 	isNull(X, Y) {
 		return this.getPoint(X, Y) ? false : true;
@@ -77,7 +81,20 @@ class TetrisBox extends Box {
 				}
 			});
 		});
-		return this.getActivePointsOnMap(copy);
+		return this.getActivePointsOnMap(copy, this.MapPosition);
+	}
+	move(isX = false, num = 1) {
+		let X = this.MapPosition.X;
+		let Y = this.MapPosition.Y;
+
+		this.tmpMapPosition = {
+			X: isX ? X + num : X,
+			Y: isX ? Y : Y + num,
+		};
+		return this.getActivePointsOnMap(this.map, this.tmpMapPosition);
+	}
+	updateMapPosition() {
+		Object.assign(this.MapPosition, this.tmpMapPosition);
 	}
 	updateActivePoints(points) {
 		if (Array.isArray(points) && !Array.isArray(points[0])) {
@@ -88,5 +105,105 @@ class TetrisBox extends Box {
 			});
 		}
 	}
+	getMapPosition() {
+		return this.MapPosition;
+	}
 }
+
+class TBox extends TetrisBase {
+	constructor(color) {
+		super(3, color);
+		this.extendsActivePoints([
+			[1, 1, 1],
+			[0, 1, 0],
+			[0, 1, 0],
+		]);
+	}
+}
+class LBox extends TetrisBase {
+	constructor(color) {
+		super(3, color);
+		this.extendsActivePoints([
+			[1, 0, 0],
+			[1, 0, 0],
+			[1, 1, 0],
+		]);
+	}
+}
+class JBox extends TetrisBase {
+	constructor(color) {
+		super(3, color);
+		this.extendsActivePoints([
+			[0, 0, 1],
+			[0, 0, 1],
+			[0, 1, 1],
+		]);
+	}
+}
+class ZBox extends TetrisBase {
+	constructor(color) {
+		super(3, color);
+		this.extendsActivePoints([
+			[0, 1, 0],
+			[1, 1, 0],
+			[1, 0, 0],
+		]);
+	}
+}
+class SquareBox extends TetrisBase {
+	constructor(color) {
+		super(2, color);
+		this.extendsActivePoints([
+			[1, 1],
+			[1, 1],
+		]);
+	}
+}
+class ZFlipBox extends TetrisBase {
+	constructor(color) {
+		super(3, color);
+		this.extendsActivePoints([
+			[0, 1, 0],
+			[0, 1, 1],
+			[0, 0, 1],
+		]);
+	}
+}
+class DotBox extends TetrisBase {
+	constructor(color) {
+		super(1, color);
+		this.extendsActivePoints([[1]]);
+	}
+}
+class IBox extends TetrisBase {
+	constructor(color) {
+		super(3, color);
+		this.extendsActivePoints([
+			[0, 1, 0],
+			[0, 1, 0],
+			[0, 1, 0],
+		]);
+	}
+}
+class TriangleBox extends TetrisBase {
+	constructor(color) {
+		super(3, color);
+		this.extendsActivePoints([
+			[0, 0, 0],
+			[0, 1, 0],
+			[1, 1, 1],
+		]);
+	}
+}
+const TetrisBox = {
+	T: TBox,
+	L: LBox,
+	J: JBox,
+	I: IBox,
+	Z: ZBox,
+	ZFlip: ZFlipBox,
+	Square: SquareBox,
+	Triangle: TriangleBox,
+	Dot: DotBox,
+};
 export default TetrisBox;

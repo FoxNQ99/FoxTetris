@@ -10,23 +10,25 @@ class Point {
 		this.color = color;
 	}
 
-	setPosition = (X, Y) => {
+	setPosition(X, Y) {
 		this.position = { X, Y };
-	};
+	}
 
-	setActive = (isActive = true) => {
+	setActive(isActive = true) {
 		this.isOn = isActive;
-	};
+	}
 
-	getPosition = () => {
+	getPosition() {
 		return this.position;
-	};
-
-	getColor = () => {
+	}
+	setColor(color) {
+		this.color = color;
+	}
+	getColor() {
 		return this.color;
-	};
-	isActive = () => {
+	}
+	isActive() {
 		return this.isOn;
-	};
+	}
 }
 export default Point;

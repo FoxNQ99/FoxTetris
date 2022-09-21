@@ -1,13 +1,12 @@
 import ENV from "../configs/env.js";
 import CusElement from "../Models/CusElement.js";
+import Utils from "./Utils.js";
 
 ("use strict");
 
 const GlobalElements = {
-	title: parrent => {
-		return new CusElement({
-			tagName: "h1",
-			parent: parrent,
+	title: () => {
+		return Utils.dom("h2", {
 			text: ENV.content.title,
 			className: ENV.className.title,
 		});

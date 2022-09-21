@@ -1,12 +1,12 @@
 import ENV from "../configs/env.js";
-import CusElement from "../Models/CusElement.js";
+import Container from "../Models/Container.js";
 import FRandom from "../services/FRandom.js";
 import GlobalElements from "../services/GlobalElements.js";
 import Utils from "../services/Utils.js";
 
 ("use strict");
 
-class Menu extends CusElement {
+class Menu extends Container {
 	constructor() {
 		super({
 			tagName: "div",
@@ -14,88 +14,46 @@ class Menu extends CusElement {
 			id: ENV.ID.menu,
 			parent: Utils.qs(`#${ENV.ID.root}`),
 		});
-		this.initElements();
-		this.showInput();
+		this.elements = this.initElements();
+		this.applyElements();
+		this.displayInput(true);
 	}
 	initElements() {
-		this.title = GlobalElements.title(this.container);
-		this.menuInput = new CusElement({
-			tagName: "input",
-			parent: this.container,
-			id: ENV.ID.menuInput,
-			attributes: [
-				["placeholder", ENV.content.menuInput],
-				["type", "text"],
-			],
-		});
-		this.lbHello = new CusElement({
-			tagName: "p",
-			id: ENV.ID.menuHelloString,
-			text: FRandom.PickRandomHello(),
-		});
-		this.btnStart = new CusElement({
-			tagName: "button",
-			id: ENV.ID.menuStartBtn,
-			parent: this.container,
-			text: ENV.content.start,
-		});
+		let self = this;
+
+		let elements = {
+			title: GlobalElements.title(),
+
+			menuInput: Utils.dom("input", {
+				id: ENV.ID.txbUserName,
+				attributes: [
+					["placeholder", ENV.content.menuInput],
+					["type", "text"],
+				],
+			}),
+
+			lbHello: Utils.dom("p", {
+				id: ENV.ID.lbHello,
+				text: "",
+			}),
+
+			btnStart: Utils.dom("button", {
+				id: ENV.ID.menuStartBtn,
+				text: ENV.content.start,
+			}),
+		};
+
+		return elements;
 	}
-	showInput() {
-		this.lbHello.hide();
-		this.menuInput.show();
-	}
-	hideInput() {
-		this.lbHello.show();
-		this.menuInput.hide();
+
+	displayInput(isDisplay = false) {
+		let txbInput = Utils.qs(`#${ENV.ID.txbUserName}`);
+		let lbHello = Utils.qs(`#${ENV.ID.lbHello}`);
+
+		if (txbInput && lbHello) {
+			txbInput.style.display = isDisplay ? "inline-block" : "none";
+			lbHello.style.display = isDisplay ? "none" : "inline-block";
+		}
 	}
 }
-// class Menu {
-// 	constructor() {
-// 		this.container = Utils.dom("div", {
-// 			id: ENV.ID.menu,
-// 			className: ENV.className.menuContainer,
-// 		});
-
-// 	}
-// 	showTitle(){
-// 		let title = Utils.dom("h1", {
-// 			parent: this.container,
-// 			text: ENV.content.title,
-// 			className: ENV.className.title,
-// 		});
-
-// 		if (!username) {
-
-// 		} else {
-
-// 		}
-
-// 		let btnStart = Utils.dom("button", {
-// 			id: username ? ENV.ID.menuStartBtnBig : ENV.ID.menuStartBtn,
-// 			parent: this.container,
-// 			text: ENV.content.start,
-// 		});
-// 		if (typeof callback === "function") {
-// 			Utils.addEvent(btnStart, "click", callback);
-// 		}
-// 	}
-// 	showInput(){
-// 		Utils.qs(`#${ENV.ID.menuHelloString}`)?.
-// 		let menuInput = Utils.dom("input", {
-// 			parent: this.container,
-// 			id: ENV.ID.menuInput,
-// 			attributes: [
-// 				["placeholder", ENV.content.menuInput],
-// 				["type", "text"],
-// 			],
-// 		});
-// 	}
-// 	setUserName(username){
-// 		let lbHello = Utils.dom("p", {
-// 			parent: this.container,
-// 			id: ENV.ID.menuHelloString,
-// 			text: FRandom.PickRandomHello() + username,
-// 		});
-// 	}
-// }
 export default Menu;
