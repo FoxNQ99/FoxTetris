@@ -26,9 +26,8 @@ i want try my coding skills with Tetris Game, this project will use vanilla Fron
 - Some Style :v
 - Fix Bug
 
-- Done Base View of Game
 </details>
-<details open>
+<details close>
 <summary>13/09/2022</summary>
 <br>
 - Add Classes :</br> - Point</br> - Box</br> - Color</br> - TetrisBase</br>
