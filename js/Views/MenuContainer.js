@@ -1,4 +1,4 @@
-import ENV from "../configs/env.js";
+import { CName, IDs, EContent } from "../configs/env.js";
 import Container from "../Models/Container.js";
 import FRandom from "../services/FRandom.js";
 import GlobalElements from "../services/GlobalElements.js";
@@ -10,9 +10,9 @@ class Menu extends Container {
 	constructor() {
 		super({
 			tagName: "div",
-			className: ENV.className.menuContainer,
-			id: ENV.ID.menu,
-			parent: Utils.qs(`#${ENV.ID.root}`),
+			className: CName.menuContainer,
+			id: IDs.menu,
+			parent: Utils.qs(`#${IDs.root}`),
 		});
 		this.elements = this.initElements();
 		this.applyElements();
@@ -25,21 +25,21 @@ class Menu extends Container {
 			title: GlobalElements.title(),
 
 			menuInput: Utils.dom("input", {
-				id: ENV.ID.txbUserName,
+				id: IDs.txbUserName,
 				attributes: [
-					["placeholder", ENV.content.menuInput],
+					["placeholder", EContent.menuInput],
 					["type", "text"],
 				],
 			}),
 
 			lbHello: Utils.dom("p", {
-				id: ENV.ID.lbHello,
+				id: IDs.lbHello,
 				text: "",
 			}),
 
 			btnStart: Utils.dom("button", {
-				id: ENV.ID.menuStartBtn,
-				text: ENV.content.start,
+				id: IDs.menuStartBtn,
+				text: EContent.start,
 			}),
 		};
 
@@ -47,8 +47,8 @@ class Menu extends Container {
 	}
 
 	displayInput(isDisplay = false) {
-		let txbInput = Utils.qs(`#${ENV.ID.txbUserName}`);
-		let lbHello = Utils.qs(`#${ENV.ID.lbHello}`);
+		let txbInput = Utils.qs(`#${IDs.txbUserName}`);
+		let lbHello = Utils.qs(`#${IDs.lbHello}`);
 
 		if (txbInput && lbHello) {
 			txbInput.style.display = isDisplay ? "inline-block" : "none";

@@ -23,7 +23,7 @@ i want try my coding skills with Tetris Game, this project will use vanilla Fron
 - Add some Boxs in Game.</br>
 - Add Timer (Game Step).</br>
 - Switch to Main Menu if Lose.</br>
-- Some Style :v
+- Some Style :v</br>
 - Fix Bug
 
 </details>

@@ -1,4 +1,4 @@
-import ENV from "../configs/env.js";
+import { CName, IDs, EContent } from "../configs/env.js";
 import Container from "../Models/Container.js";
 import InfoContainer from "../Models/InfoContainer.js";
 import GlobalElements from "../services/GlobalElements.js";
@@ -9,8 +9,8 @@ import Utils from "../services/Utils.js";
 class GameContainer extends Container {
 	constructor() {
 		super({
-			className: ENV.className.gameContainer,
-			parent: Utils.qs(`#${ENV.ID.root}`),
+			className: CName.gameContainer,
+			parent: Utils.qs(`#${IDs.root}`),
 		});
 		this.elements = this.initElements();
 		this.applyElements();
@@ -21,12 +21,12 @@ class GameContainer extends Container {
 			title: GlobalElements.title(),
 
 			mapNode: Utils.dom("div", {
-				className: ENV.className.mapContainer,
-				id: ENV.ID.mapContainer,
+				className: CName.mapContainer,
+				id: IDs.mapContainer,
 			}),
 
 			infoNode: Utils.dom("div", {
-				className: ENV.className.gameInfoContainer,
+				className: CName.gameInfoContainer,
 			}),
 		};
 		let infoNodes = self.initInfoNodes();
@@ -37,20 +37,20 @@ class GameContainer extends Container {
 	initInfoNodes() {
 		return {
 			playerName: new InfoContainer({
-				id: ENV.ID.lbUsername,
+				id: IDs.lbUsername,
 				desc: "",
 				child: "",
 			}).getContainer(),
 
 			scoreNode: new InfoContainer({
-				id: ENV.ID.lbScore,
-				desc: ENV.content.descScore,
+				id: IDs.lbScore,
+				desc: EContent.descScore,
 				child: "0",
 			}).getContainer(),
 
 			nextBoxNode: new InfoContainer({
-				id: ENV.ID.nextBox,
-				desc: ENV.content.descNextBox,
+				id: IDs.nextBox,
+				desc: EContent.descNextBox,
 				child: Utils.dom("div", {}),
 			}).getContainer(),
 		};

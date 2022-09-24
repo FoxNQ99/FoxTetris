@@ -1,4 +1,4 @@
-import ENV from "../configs/env.js";
+import { EContent, CName } from "../configs/env.js";
 import CusElement from "../Models/CusElement.js";
 import Utils from "./Utils.js";
 
@@ -7,8 +7,8 @@ import Utils from "./Utils.js";
 const GlobalElements = {
 	title: () => {
 		return Utils.dom("h2", {
-			text: ENV.content.title,
-			className: ENV.className.title,
+			text: EContent.title,
+			className: CName.title,
 		});
 	},
 };

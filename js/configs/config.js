@@ -9,7 +9,7 @@ class Config {
 			},
 			pointSize: 25,
 			game: {
-				delay: 800, //in milies second
+				delay: 600, //in milies second
 			},
 		};
 	}

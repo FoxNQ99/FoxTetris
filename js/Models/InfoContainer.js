@@ -1,4 +1,4 @@
-import ENV from "../configs/env.js";
+import { CName } from "../configs/env.js";
 import Utils from "../services/Utils.js";
 import Container from "./Container.js";
 
@@ -7,7 +7,7 @@ import Container from "./Container.js";
 class InfoContainer extends Container {
 	constructor(params) {
 		super({
-			className: ENV.className.infoContainer,
+			className: CName.infoContainer,
 		});
 		let elements = this.initElements(params);
 		Utils.appendChildrens(this.container, elements);
@@ -16,7 +16,7 @@ class InfoContainer extends Container {
 		let childIsString = typeof params.child === "string";
 
 		let descNode = Utils.dom("p", {
-			className: ENV.className.infoDesc,
+			className: CName.infoDesc,
 			text: params.desc,
 		});
 
@@ -30,7 +30,7 @@ class InfoContainer extends Container {
 			contentNode = params.child;
 		}
 		contentNode.id = params.id;
-		contentNode.className = ENV.className.infoContent;
+		contentNode.className = CName.infoContent;
 		return {
 			descNode,
 			contentNode,

@@ -1,4 +1,4 @@
-import ENV from "../configs/env.js";
+import { EContent } from "../configs/env.js";
 import TetrisBox from "../Models/TetrisBoxs.js";
 import { Color } from "./Color.js";
 
@@ -16,7 +16,7 @@ class FRandom {
 		return Colors[num];
 	}
 	static PickRandomHello() {
-		let helloArray = ENV.hello;
+		let helloArray = EContent.hello;
 		let index = this.Number(helloArray.length);
 		return helloArray[index] || "Hello";
 	}

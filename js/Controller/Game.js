@@ -1,5 +1,5 @@
 import Config from "../configs/config.js";
-import ENV from "../configs/env.js";
+import { CName, IDs, EContent } from "../configs/env.js";
 import Box from "../Models/Box.js";
 import Player from "../Models/Player.js";
 import Cleaner from "../services/Cleaner.js";
@@ -21,7 +21,7 @@ class GameController {
 		this.game = new GameContainer();
 		this.config = new Config();
 		this.map = null;
-		this.mapNode = Utils.id(ENV.ID.mapContainer);
+		this.mapNode = Utils.id(IDs.mapContainer);
 		this.player = new Player();
 		this.Boxs = {
 			current: undefined,
@@ -34,7 +34,7 @@ class GameController {
 			let self = this;
 			self.Render.Menu();
 
-			Utils.addEvent(Utils.qs(`#${ENV.ID.menuStartBtn}`), "click", () => {
+			Utils.addEvent(Utils.qs(`#${IDs.menuStartBtn}`), "click", () => {
 				self.Tetris.start();
 			});
 			document.addEventListener("keydown", key => {
@@ -63,13 +63,13 @@ class GameController {
 
 		start: () => {
 			let self = this;
-			let txbInput = Utils.qs(`#${ENV.ID.txbUserName}`);
+			let txbInput = Utils.qs(`#${IDs.txbUserName}`);
 			if (txbInput && !self.player.getName()) {
 				let username = Cleaner.Text(txbInput.value);
 				self.player.setName(username);
 			}
 			self.Render.Game();
-			Utils.setText(ENV.ID.lbUsername, self.player.getName());
+			Utils.setText(IDs.lbUsername, self.player.getName());
 
 			let mapSize = this.config.getMapSize();
 
@@ -96,6 +96,7 @@ class GameController {
 			self.player.setLose(true);
 			setTimeout(() => {
 				self.Render.Menu();
+				this.ModifierMap.clear();
 			}, 3000);
 		},
 	};
@@ -118,7 +119,7 @@ class GameController {
 			self.menu.show();
 			if (self.player.getName()) {
 				self.menu.displayInput(false);
-				Utils.setText(ENV.ID.lbHello, FRandom.PickRandomHello() + self.player.getName());
+				Utils.setText(IDs.lbHello, FRandom.PickRandomHello() + self.player.getName());
 			} else {
 				self.menu.displayInput(true);
 			}
@@ -154,6 +155,10 @@ class GameController {
 				return true;
 			});
 			return canMove;
+		},
+		clear() {
+			let self = this;
+			Utils.clear(self.mapNode);
 		},
 	};
 	ModifierBox = {
@@ -191,15 +196,20 @@ class GameController {
 		let self = this;
 	}
 
-	genarateElementByPoint(item) {
-		let self = this;
+	genarateElementByPoint(item, reRender = false) {
 		let position = item.getPosition();
-		let element = Utils.dom("span", {
-			className: [ENV.className.point, ENV.className.activePoint],
-			id: `map${position.X}-${position.Y}`,
-		});
-		Utils.setStyle(element, self.generatePointStyle(item));
-		return element;
+		let ele = Utils.qs(`map${position.X}-${position.Y}`);
+		console.log(ele);
+		if (!ele || reRender) {
+			let self = this;
+			let element = Utils.dom("span", {
+				className: [CName.point, CName.activePoint],
+				id: `map${position.X}-${position.Y}`,
+			});
+			Utils.setStyle(element, self.generatePointStyle(item));
+			return element;
+		}
+		return " ";
 	}
 	generatePointStyle(item) {
 		let self = this;
