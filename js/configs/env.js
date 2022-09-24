@@ -1,5 +1,6 @@
 export const CName = {
 	point: "game-point",
+	tmpPoint: "tmp-point",
 	activePoint: "active",
 	gameContainer: "game-container",
 	mapContainer: "game-map",
@@ -13,6 +14,7 @@ export const CName = {
 	title: "title",
 };
 export const IDs = {
+	tmpPoint: "tmp",
 	root: "root",
 	view: "mainView",
 	menu: "mainMenu",

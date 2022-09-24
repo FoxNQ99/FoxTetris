@@ -74,5 +74,19 @@ const Utils = {
 			Object.assign(element.style, style);
 		}
 	},
+	render: (parent, elements, clear = false) => {
+		if (parent && elements) {
+			if (clear) {
+				Utils.clear(parent);
+			}
+			if (Array.isArray(elements)) {
+				elements.map(ele => {
+					parent.append(ele);
+				});
+			} else {
+				parent.append(elements);
+			}
+		}
+	},
 };
 export default Utils;

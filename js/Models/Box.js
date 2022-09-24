@@ -26,6 +26,9 @@ class Box {
 			CusErr.Show(`Size is undefined or less than 0 (size = ${size})`);
 		}
 	}
+	getSize() {
+		return this.size;
+	}
 	initializePoints() {
 		let self = this;
 		let map = [];
@@ -71,6 +74,9 @@ class Box {
 	}
 	isArray2D(arr2D) {
 		return (arr2D.length > 0 && arr2D[0].length > 0) || false;
+	}
+	reset() {
+		this.map = this.initializePoints();
 	}
 	//debugZone
 	ShowMapDebug() {

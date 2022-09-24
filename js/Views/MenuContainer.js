@@ -6,7 +6,7 @@ import Utils from "../services/Utils.js";
 
 ("use strict");
 
-class Menu extends Container {
+class MenuContainer extends Container {
 	constructor() {
 		super({
 			tagName: "div",
@@ -56,4 +56,4 @@ class Menu extends Container {
 		}
 	}
 }
-export default Menu;
+export default MenuContainer;

@@ -1,146 +1,205 @@
+//config
 import Config from "../configs/config.js";
 import { CName, IDs, EContent } from "../configs/env.js";
+
+//Models
 import Box from "../Models/Box.js";
 import Player from "../Models/Player.js";
+import Point from "../Models/Point.js";
+//services
 import Cleaner from "../services/Cleaner.js";
 import FRandom from "../services/FRandom.js";
 import Utils from "../services/Utils.js";
+import MenuContainer from "../Views/MenuContainer.js";
 import GameContainer from "../Views/GameContainer.js";
-import Menu from "../Views/MenuContainer.js";
-import TetrisBox from "../Models/TetrisBoxs.js";
 
 ("use strict");
 
 class GameController {
 	constructor(params) {
-		this.initVariable();
-		this.Tetris.setup();
+		this.initVar();
+		this.TetrisGame.init();
+		this.Render.Menu();
 	}
-	initVariable() {
-		this.menu = new Menu();
-		this.game = new GameContainer();
-		this.config = new Config();
-		this.map = null;
-		this.mapNode = Utils.id(IDs.mapContainer);
-		this.player = new Player();
-		this.Boxs = {
-			current: undefined,
-			next: undefined,
-		};
+	initVar() {
+		let self = this;
+		self.RootNode = Utils.id(IDs.root);
+		if (!self.RootNode) {
+			console.error("cant Find Root Node");
+			return;
+		}
+		self.config = new Config();
+		self.menu = new MenuContainer();
+		self.game = new GameContainer();
+
+		self.map = null;
+		self.MapNode = Utils.id(IDs.mapContainer);
+		this.Player = new Player();
 		this.timer = null;
 	}
-	Tetris = {
-		setup: () => {
+	TetrisGame = {
+		init: () => {
 			let self = this;
-			self.Render.Menu();
-
-			Utils.addEvent(Utils.qs(`#${IDs.menuStartBtn}`), "click", () => {
-				self.Tetris.start();
+			self.TetrisGame.setupSizeElements();
+			Utils.addEvent(Utils.id(IDs.menuStartBtn), "click", () => {
+				self.TetrisGame.start();
 			});
+
 			document.addEventListener("keydown", key => {
-				if (!self.player.IsLose()) {
+				if (!self.Player.IsLose()) {
 					switch (key.key) {
 						case "s":
 						case "ArrowDown":
-							self.ModifierBox.moveCurrent(false, 1);
+							self.Boxs.move(false, 1);
 							break;
 						case "a":
 						case "ArrowLeft":
-							self.ModifierBox.moveCurrent(true, -1);
+							self.Boxs.move(true, -1);
 							break;
 						case "d":
 						case "ArrowRight":
-							self.ModifierBox.moveCurrent(true, 1);
+							self.Boxs.move(true, 1);
 							break;
 						case "r":
 						case " ":
-							self.ModifierBox.rotateCurrent();
+							self.Boxs.rotate();
 							break;
 					}
 				}
 			});
+
+			self.Player.setLose(true);
+		},
+
+		setupSizeElements: () => {
+			let self = this;
+
+			let pointSize = self.config.getPointSize();
+			let nextBox = self.Boxs.next;
+			if (nextBox) {
+				let ENextBox = Utils.id(IDs.nextBox);
+				Utils.setStyle(ENextBox, {
+					with: pointSize * (5 - nextBox.getSize().width),
+					height: pointSize * (5 - nextBox.getSize().height),
+				});
+			}
+
+			Utils.setStyle(self.MapNode, self.config.getGameSize());
 		},
 
 		start: () => {
 			let self = this;
-			let txbInput = Utils.qs(`#${IDs.txbUserName}`);
-			if (txbInput && !self.player.getName()) {
-				let username = Cleaner.Text(txbInput.value);
-				self.player.setName(username);
-			}
+
 			self.Render.Game();
-			Utils.setText(IDs.lbUsername, self.player.getName());
+			Utils.clear(self.MapNode);
+			self.Player.reset();
 
-			let mapSize = this.config.getMapSize();
-
+			let mapSize = self.config.getMapSize();
 			self.map = new Box([mapSize.width, mapSize.height], "red");
 
-			//setup gameSize
-			let gameSize = self.config.getGameSize();
-			Object.assign(this.mapNode.style, gameSize);
-			//reset Player
-			self.player.reset();
+			self.Boxs.randomNext();
+			self.Boxs.randomNext();
 
-			self.ModifierBox.randomNext();
-			self.ModifierBox.randomNext();
-			console.log(this.Boxs.current);
 			self.timer = setInterval(() => {
-				self.ModifierBox.moveCurrent(false, 1);
+				self.Boxs.move(false, 1);
 			}, self.config.getDelay());
 		},
 
 		end: () => {
 			let self = this;
 			clearInterval(self.timer);
-			//Show End
-			self.player.setLose(true);
 			setTimeout(() => {
 				self.Render.Menu();
-				this.ModifierMap.clear();
 			}, 3000);
 		},
 	};
 	Render = {
-		Frame: () => {
-			let self = this;
-			Utils.clear(this.mapNode);
-			let activePoints = self.map.getActivePoints();
-			let currentBoxPoints = this.Boxs.current.getActivePoints();
-			activePoints = activePoints.concat(currentBoxPoints);
-
-			activePoints.map(item => {
-				let element = this.genarateElementByPoint(item);
-				self.mapNode.append(element);
-			});
-		},
 		Menu: () => {
 			let self = this;
+
 			self.game.hide();
 			self.menu.show();
-			if (self.player.getName()) {
+			if (self.Player.getName()) {
 				self.menu.displayInput(false);
-				Utils.setText(IDs.lbHello, FRandom.PickRandomHello() + self.player.getName());
+				Utils.setText(IDs.lbHello, FRandom.PickRandomHello() + self.Player.getName());
 			} else {
 				self.menu.displayInput(true);
 			}
 		},
+
 		Game: () => {
 			let self = this;
 
 			self.menu.hide();
 			self.game.show();
 		},
-	};
-	ModifierMap = {
-		applyPoints: points => {
+
+		Frame: (clear = false) => {
 			let self = this;
-			if (Array.isArray(points)) {
-				points.map(item => {
-					let position = item.getPosition();
-					self.map.setActive(position.X, position.Y, item.isActive(), item.getColor());
+			if (clear) {
+				Utils.clear(self.MapNode);
+			} else {
+				let tmpElements = document.querySelectorAll(`#${IDs.tmpPoint}`);
+				tmpElements.forEach(ele => {
+					ele.remove();
 				});
 			}
+			let currentElements = self.GenerateEle.byBox(self.Boxs.current, IDs.tmpPoint, true);
+
+			Utils.render(self.MapNode, currentElements);
 		},
+
+		nextBox: () => {
+			let self = this;
+
+			if (self.Boxs.next) {
+				let nextBoxElement = Utils.id(IDs.nextBox);
+				let elements = self.GenerateEle.byBox(self.Boxs.next, IDs.nextBox, false);
+				Utils.render(nextBoxElement, elements, true);
+			}
+		},
+	};
+	Boxs = {
+		current: undefined,
+
+		next: undefined,
+
+		randomNext: () => {
+			this.Boxs.current = this.Boxs.next || null;
+			this.Boxs.next = FRandom.PickRandomBox();
+			this.Render.nextBox();
+		},
+
+		move: (isX = false, num = 1) => {
+			let self = this;
+			let current = self.Boxs.current;
+			if (current) {
+				let points = current.move(isX, num);
+				let currentPosition = current.getMapPosition();
+				if (self.GameMap.checkPosition(points)) {
+					current.updateMapPosition();
+					self.Render.Frame();
+				} else if (!isX) {
+					self.GameMap.applyPoints(current.getActivePoints());
+					if (currentPosition.Y === 0) {
+						self.TetrisGame.end();
+					} else {
+						self.Boxs.randomNext();
+					}
+				}
+			}
+		},
+
+		rotate: () => {
+			let self = this;
+			let points = self.Boxs.current.rotate();
+			if (self.GameMap.checkPosition(points)) {
+				self.Boxs.current.updateActivePoints(points);
+				self.Render.Frame();
+			}
+		},
+	};
+	GameMap = {
 		checkPosition: points => {
 			let self = this;
 			let canMove = true;
@@ -156,73 +215,65 @@ class GameController {
 			});
 			return canMove;
 		},
-		clear() {
-			let self = this;
-			Utils.clear(self.mapNode);
-		},
-	};
-	ModifierBox = {
-		randomNext: () => {
-			this.Boxs.current = this.Boxs.next || null;
-			this.Boxs.next = FRandom.PickRandomBox();
-		},
-		moveCurrent: (isX = false, num = 1) => {
-			let self = this;
-			let current = self.Boxs.current;
-			let points = current.move(isX, num);
-			let currentPosition = current.getMapPosition();
-			if (self.ModifierMap.checkPosition(points)) {
-				current.updateMapPosition();
-				self.Render.Frame();
-			} else if (!isX) {
-				self.ModifierMap.applyPoints(current.getActivePoints());
-				if (currentPosition.Y === 0) {
-					self.Tetris.end();
-				} else {
-					self.ModifierBox.randomNext();
-				}
-			}
-		},
-		rotateCurrent: () => {
-			let self = this;
-			let points = self.Boxs.current.rotate();
-			if (self.ModifierMap.checkPosition(points)) {
-				self.Boxs.current.updateActivePoints(points);
-				self.Render.Frame();
-			}
-		},
-	};
-	Test() {
-		let self = this;
-	}
 
-	genarateElementByPoint(item, reRender = false) {
-		let position = item.getPosition();
-		let ele = Utils.qs(`map${position.X}-${position.Y}`);
-		console.log(ele);
-		if (!ele || reRender) {
+		applyPoints: points => {
 			let self = this;
-			let element = Utils.dom("span", {
-				className: [CName.point, CName.activePoint],
-				id: `map${position.X}-${position.Y}`,
-			});
-			Utils.setStyle(element, self.generatePointStyle(item));
-			return element;
-		}
-		return " ";
-	}
-	generatePointStyle(item) {
-		let self = this;
-		let pointSize = self.config.getPointSize();
-		let position = item.getPosition();
-		return {
-			backgroundColor: item.getColor(),
-			width: pointSize + "px",
-			height: pointSize + "px",
-			marginTop: pointSize * position.Y + "px",
-			marginLeft: pointSize * position.X + "px",
-		};
-	}
+			if (Array.isArray(points)) {
+				points.map(item => {
+					let position = item.getPosition();
+					self.map.setActive(position.X, position.Y, item.isActive(), item.getColor());
+					Utils.render(self.MapNode, self.GenerateEle.byPoint(item, "map"));
+				});
+			}
+		},
+	};
+	GenerateEle = {
+		byPoint: (item, subID = "map", isTmp = false, reRender = false) => {
+			let self = this;
+
+			let position = item.getPosition();
+			let id = isTmp ? subID : `${subID}${position.X}-${position.Y}`;
+			let ele = Utils.id(id);
+			if (!ele || reRender) {
+				let element = Utils.dom("span", {
+					className: [CName.point, isTmp ? CName.tmpPoint : CName.activePoint],
+					id,
+				});
+				Utils.setStyle(element, self.GenerateEle.PointStyle(item));
+				return element;
+			}
+			return null;
+		},
+
+		byBox: (box, subID = "map", isTmp = false, reRender = false) => {
+			let self = this;
+			let elements = [];
+
+			if (box instanceof Box) {
+				let points = box.getActivePoints();
+				points.map(item => {
+					let ele = self.GenerateEle.byPoint(item, subID, isTmp, reRender);
+					if (ele) {
+						elements.push(ele);
+					}
+				});
+			}
+			return elements;
+		},
+
+		PointStyle: item => {
+			let self = this;
+			let pointSize = self.config.getPointSize();
+			let position = item.getPosition();
+			return {
+				backgroundColor: item.getColor(),
+				width: pointSize + "px",
+				height: pointSize + "px",
+				marginTop: pointSize * position.Y + "px",
+				marginLeft: pointSize * position.X + "px",
+			};
+		},
+	};
 }
 
 export default GameController;
