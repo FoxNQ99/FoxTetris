@@ -153,6 +153,7 @@ class GameController {
 		end: () => {
 			let self = this;
 			clearInterval(self.timer);
+			self.Player.setLose(true);
 			self.overScreen.updatePlayer(self.Player);
 			self.game.hide();
 			self.menu.hide();
