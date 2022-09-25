@@ -20,6 +20,11 @@ class FRandom {
 		let index = this.Number(helloArray.length);
 		return helloArray[index] || "Hello";
 	}
+	static PickRandomOverText() {
+		let overArray = EContent.over;
+		let index = this.Number(overArray.length);
+		return overArray[index] || "Thank You";
+	}
 	static PickRandomBox() {
 		let Boxs = Object.values(TetrisBox);
 		let Colors = Object.values(Color);

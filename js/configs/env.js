@@ -11,6 +11,11 @@ export const CName = {
 	infoContent: "info-content",
 	nextBoxContent: "info-next-box",
 
+	overContainer: "game-over",
+	overTitle: "over-title",
+	overDesc: "over-desc",
+	overContent: "over-content",
+
 	title: "title",
 };
 export const IDs = {
@@ -27,14 +32,24 @@ export const IDs = {
 	lbUsername: "lbUsername",
 	lbHello: "lbHello",
 	nextBox: "nextBox",
+	lbOverTimeLeft: "lbOverTime",
+	lbOverHighScore: "lbHighScore",
+	lbPlayerScore: "lbPlayerScore",
 };
 export const EContent = {
 	title: "JS Tetris Game",
 	start: "Start Game",
-	lose: "You Lose!!, Thank you for Playing",
+	lose: "You Lose!!",
 	won: "Wow, You is not a Hunman",
 	menuInput: "What Your Name, Hero?",
 	descScore: " Score ",
 	descNextBox: " Next Box ",
 	hello: ["Hello, ", "Hi, ", "Thank You for Playing My Game, ", "Have a Nice Day, ", "Do You Like My Game, "],
+	over: ["Thank You for Playing My Game, ", "Nice, Give Up Next Time, "],
+	highScore: "High Score: ",
+	playerScore: "Your Score: ",
+};
+export const LocalVar = {
+	username: "userName",
+	highScore: "highScore",
 };

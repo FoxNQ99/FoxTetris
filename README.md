@@ -21,7 +21,9 @@ i want try my coding skills with Tetris Game, this project will use vanilla Fron
 <br>
 - Add Classes :</br> - GameMap ( Object for Map in Game)</br>
 - Add Function check and update score.</br>
-- Optimize Code
+- Add Game Over Screen</br>
+- Add DebugMode</br>
+- Optimize Code</br>
 - Fix Bugs</br>
 </details>
 <details close>

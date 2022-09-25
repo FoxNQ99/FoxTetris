@@ -1,6 +1,6 @@
 //config
 import Config from "../configs/config.js";
-import { CName, IDs, EContent } from "../configs/env.js";
+import { CName, IDs, EContent, LocalVar } from "../configs/env.js";
 
 //Models
 import Box from "../Models/Box.js";
@@ -15,6 +15,7 @@ import GameContainer from "../Views/GameContainer.js";
 import TetrisBox from "../Models/TetrisBoxs.js";
 import GameMap from "../Models/GameMap.js";
 import { Color } from "../services/Color.js";
+import GameOver from "../Views/GameOver.js";
 
 ("use strict");
 
@@ -22,6 +23,7 @@ class GameController {
 	constructor(params) {
 		this.initVar();
 		this.TetrisGame.init();
+		this.debugMode = params.debugMode || false;
 	}
 	initVar() {
 		let self = this;
@@ -33,6 +35,7 @@ class GameController {
 		self.config = new Config();
 		self.menu = new MenuContainer();
 		self.game = new GameContainer();
+		self.overScreen = new GameOver();
 
 		self.map = null;
 		self.MapNode = Utils.id(IDs.mapContainer);
@@ -109,19 +112,38 @@ class GameController {
 
 		start: () => {
 			let self = this;
-
 			self.renderGame();
 			Utils.clear(self.MapNode);
 			self.Player.reset();
 			self.TetrisGame.setupGameMap();
-			//self.TetrisGame.gameStep();
 
-			//TestZone
-			self.Test();
+			let localPlayerName = localStorage.getItem(LocalVar.username);
+			let playerName = self.Player.getName();
+
+			if (!playerName) {
+				if (localPlayerName) {
+					self.Player.setName(localPlayerName);
+				} else {
+					let txbInput = Utils.id(IDs.txbUserName);
+					playerName = txbInput.value;
+					console.log(playerName);
+
+					self.Player.setName(playerName);
+				}
+			} else if (localPlayerName !== playerName) {
+				localStorage.remove(LocalVar.username);
+				localStorage.setItem(LocalVar.username, playerName);
+			}
+			//setup TestZone
+			if (self.debugMode) {
+				self.DeBug.Test();
+			} else {
+				self.TetrisGame.gameStep();
+			}
 		},
 		gameStep: () => {
 			let self = this;
-			while (!self.Boxs.next) {
+			while (!self.Boxs.current) {
 				self.Boxs.randomNext();
 			}
 			self.timer = setInterval(() => {
@@ -131,26 +153,31 @@ class GameController {
 		end: () => {
 			let self = this;
 			clearInterval(self.timer);
-			setTimeout(() => {
+			self.overScreen.updatePlayer(self.Player);
+			self.game.hide();
+			self.menu.hide();
+			self.overScreen.show(5).then(res => {
 				self.showMenu();
-			}, 3000);
+			});
 		},
 	};
 	showMenu() {
 		let self = this;
-
+		self.overScreen.hide();
 		self.game.hide();
 		self.menu.show();
-		if (self.Player.getName()) {
-			self.menu.displayInput(false);
-			Utils.setText(IDs.lbHello, FRandom.PickRandomHello() + self.Player.getName());
-		} else {
+		let playerName = localStorage.getItem(LocalVar.username);
+		if (!playerName) {
 			self.menu.displayInput(true);
+		} else {
+			self.menu.displayInput(false);
+			self.Player.setName(playerName);
+			Utils.setText(IDs.lbHello, FRandom.PickRandomHello() + self.Player.getName());
 		}
 	}
 	renderGame() {
 		let self = this;
-
+		self.overScreen.hide();
 		self.menu.hide();
 		self.game.show();
 	}
@@ -192,7 +219,7 @@ class GameController {
 
 		randomNext: () => {
 			this.Boxs.current = this.Boxs.next || null;
-			this.Boxs.next = new TetrisBox.I("red"); //FRandom.PickRandomBox();
+			this.Boxs.next = FRandom.PickRandomBox();
 			this.showNextBox();
 		},
 
@@ -206,12 +233,13 @@ class GameController {
 					current.updateMapPosition();
 					self.renderFrame();
 				} else if (!isX) {
-					self.GameMap.applyPoints(current.getActivePoints());
+					self.map.applyPoints(current.getActivePoints());
 					if (currentPosition.Y === 0) {
 						self.TetrisGame.end();
 					} else {
 						self.GameMap.checkScore();
 						self.Boxs.randomNext();
+						self.renderFrame(true);
 					}
 				}
 			}
@@ -259,17 +287,6 @@ class GameController {
 				return true;
 			});
 			return canMove;
-		},
-
-		applyPoints: points => {
-			let self = this;
-			if (Array.isArray(points)) {
-				points.map(item => {
-					let position = item.getPosition();
-					self.map.setActive(position.X, position.Y, item.isActive(), item.getColor());
-					Utils.render(self.MapNode, self.GenerateEle.byPoint(item, "map"));
-				});
-			}
 		},
 	};
 	GenerateEle = {
@@ -319,17 +336,32 @@ class GameController {
 			};
 		},
 	};
-	Test() {
-		let points = [];
-		for (let Y = 20; Y < 25; Y++) {
-			for (let i = 3; i < 15; i++) {
-				points.push(new Point(i, Y, true, "red"));
+	DeBug = {
+		Test: () => {
+			//
+			for (let Y = 20; Y < 25; Y++) {
+				this.DeBug.setPoint(Y, 3, 15);
 			}
-		}
-		this.GameMap.applyPoints(points);
-		this.Boxs.randomNext();
-		this.Boxs.randomNext();
-	}
+
+			this.DeBug.spawBox(TetrisBox.L);
+			this.DeBug.spawBox(TetrisBox.L);
+		},
+		setPoint: (Line, from, to) => {
+			let self = this;
+			let points = [];
+			for (let i = from; i < to; i++) {
+				points.push(new Point(i, Line, true, "red"));
+			}
+			self.map.applyPoints(points);
+		},
+		spawBox: tetrisBox => {
+			if (tetrisBox) {
+				this.Boxs.current = this.Boxs.next || null;
+				this.Boxs.next = new tetrisBox("cyan");
+				this.showNextBox();
+			}
+		},
+	};
 }
 
 export default GameController;

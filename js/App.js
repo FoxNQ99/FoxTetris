@@ -1,3 +1,3 @@
 import GameController from "./Controller/Game.js";
 
-let game = new GameController();
+let game = new GameController({ debugMode: false });

@@ -59,6 +59,15 @@ class GameMap extends Box {
 			}
 		}
 	}
+	applyPoints(points) {
+		let self = this;
+		if (Array.isArray(points)) {
+			points.map(item => {
+				let position = item.getPosition();
+				self.setActive(position.X, position.Y, item.isActive(), item.getColor());
+			});
+		}
+	}
 }
 
 export default GameMap;
