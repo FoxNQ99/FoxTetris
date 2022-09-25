@@ -45,6 +45,8 @@ class GameController {
 		self.MapNode = Utils.id(IDs.mapContainer);
 		this.Player = new Player();
 		this.timer = null;
+
+		//Test
 	}
 	setupBackground() {
 		let background = Utils.dom("div", {
