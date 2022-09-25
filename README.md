@@ -17,6 +17,14 @@ i want try my coding skills with Tetris Game, this project will use vanilla Fron
 # Change Logs:
 
 <details open>
+<summary>25/09/2022</summary>
+<br>
+- Add Classes :</br> - GameMap ( Object for Map in Game)</br>
+- Add Function check and update score.</br>
+- Optimize Code
+- Fix Bugs</br>
+</details>
+<details close>
 <summary>20/09/2022</summary>
 <br>
 - Done Controller (Move Box, Check can move, Rotate Box). </br>
