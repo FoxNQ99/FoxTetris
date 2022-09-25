@@ -14,6 +14,7 @@ export const CName = {
 	title: "title",
 };
 export const IDs = {
+	map: "map",
 	tmpPoint: "tmp",
 	root: "root",
 	view: "mainView",

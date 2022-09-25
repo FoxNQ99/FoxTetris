@@ -12,6 +12,9 @@ import FRandom from "../services/FRandom.js";
 import Utils from "../services/Utils.js";
 import MenuContainer from "../Views/MenuContainer.js";
 import GameContainer from "../Views/GameContainer.js";
+import TetrisBox from "../Models/TetrisBoxs.js";
+import GameMap from "../Models/GameMap.js";
+import { Color } from "../services/Color.js";
 
 ("use strict");
 
@@ -19,7 +22,6 @@ class GameController {
 	constructor(params) {
 		this.initVar();
 		this.TetrisGame.init();
-		this.Render.Menu();
 	}
 	initVar() {
 		let self = this;
@@ -40,125 +42,149 @@ class GameController {
 	TetrisGame = {
 		init: () => {
 			let self = this;
-			self.TetrisGame.setupSizeElements();
+
+			self.TetrisGame.setSizeNextBox(0);
+			self.TetrisGame.setupButtonStart();
+			self.TetrisGame.setupKeyBoard();
+			self.Player.setLose(true);
+			self.showMenu();
+		},
+
+		setSizeNextBox: pointNumber => {
+			let self = this;
+
+			let pointSize = self.config.getPointSize();
+			let ENextBox = Utils.id(IDs.nextBox);
+
+			Utils.setStyle(ENextBox, {
+				with: pointSize * (5 - pointNumber),
+				height: pointSize * (5 - pointNumber),
+			});
+		},
+
+		setupGameMap: () => {
+			let self = this;
+			Utils.clear(self.MapNode);
+			Utils.setStyle(self.MapNode, self.config.getGameSize());
+			let mapSize = self.config.getMapSize();
+			self.map = new GameMap({
+				width: mapSize.width,
+				height: mapSize.height,
+				color: Color.Blue,
+			});
+		},
+
+		setupButtonStart: () => {
+			let self = this;
 			Utils.addEvent(Utils.id(IDs.menuStartBtn), "click", () => {
 				self.TetrisGame.start();
 			});
+		},
 
+		setupKeyBoard: () => {
+			let self = this;
 			document.addEventListener("keydown", key => {
 				if (!self.Player.IsLose()) {
 					switch (key.key) {
 						case "s":
 						case "ArrowDown":
-							self.Boxs.move(false, 1);
+							self.Boxs.moveCurrent(false, 1);
 							break;
 						case "a":
 						case "ArrowLeft":
-							self.Boxs.move(true, -1);
+							self.Boxs.moveCurrent(true, -1);
 							break;
 						case "d":
 						case "ArrowRight":
-							self.Boxs.move(true, 1);
+							self.Boxs.moveCurrent(true, 1);
 							break;
 						case "r":
 						case " ":
-							self.Boxs.rotate();
+							self.Boxs.rotateCurrent();
 							break;
 					}
 				}
 			});
-
-			self.Player.setLose(true);
-		},
-
-		setupSizeElements: () => {
-			let self = this;
-
-			let pointSize = self.config.getPointSize();
-			let nextBox = self.Boxs.next;
-			if (nextBox) {
-				let ENextBox = Utils.id(IDs.nextBox);
-				Utils.setStyle(ENextBox, {
-					with: pointSize * (5 - nextBox.getSize().width),
-					height: pointSize * (5 - nextBox.getSize().height),
-				});
-			}
-
-			Utils.setStyle(self.MapNode, self.config.getGameSize());
 		},
 
 		start: () => {
 			let self = this;
 
-			self.Render.Game();
+			self.renderGame();
 			Utils.clear(self.MapNode);
 			self.Player.reset();
+			self.TetrisGame.setupGameMap();
+			//self.TetrisGame.gameStep();
 
-			let mapSize = self.config.getMapSize();
-			self.map = new Box([mapSize.width, mapSize.height], "red");
-
-			self.Boxs.randomNext();
-			self.Boxs.randomNext();
-
+			//TestZone
+			self.Test();
+		},
+		gameStep: () => {
+			let self = this;
+			while (!self.Boxs.next) {
+				self.Boxs.randomNext();
+			}
 			self.timer = setInterval(() => {
-				self.Boxs.move(false, 1);
+				self.Boxs.moveCurrent(false, 1);
 			}, self.config.getDelay());
 		},
-
 		end: () => {
 			let self = this;
 			clearInterval(self.timer);
 			setTimeout(() => {
-				self.Render.Menu();
+				self.showMenu();
 			}, 3000);
 		},
 	};
-	Render = {
-		Menu: () => {
-			let self = this;
+	showMenu() {
+		let self = this;
 
-			self.game.hide();
-			self.menu.show();
-			if (self.Player.getName()) {
-				self.menu.displayInput(false);
-				Utils.setText(IDs.lbHello, FRandom.PickRandomHello() + self.Player.getName());
-			} else {
-				self.menu.displayInput(true);
-			}
-		},
+		self.game.hide();
+		self.menu.show();
+		if (self.Player.getName()) {
+			self.menu.displayInput(false);
+			Utils.setText(IDs.lbHello, FRandom.PickRandomHello() + self.Player.getName());
+		} else {
+			self.menu.displayInput(true);
+		}
+	}
+	renderGame() {
+		let self = this;
 
-		Game: () => {
-			let self = this;
+		self.menu.hide();
+		self.game.show();
+	}
+	renderScore() {
+		let self = this;
+		Utils.setText(IDs.lbScore, self.Player.getScore());
+	}
+	renderFrame(clear = false) {
+		let self = this;
+		if (clear) {
+			Utils.clear(self.MapNode);
+		} else {
+			let tmpElements = document.querySelectorAll(`#${IDs.tmpPoint}`);
+			tmpElements.forEach(ele => {
+				ele.remove();
+			});
+		}
+		let currentElements = self.GenerateEle.byBox(self.Boxs.current, IDs.tmpPoint, true);
+		if (clear) {
+			let mapElements = self.GenerateEle.byBox(self.map, IDs.map, false);
+			currentElements = currentElements.concat(mapElements);
+		}
+		Utils.render(self.MapNode, currentElements);
+		self.renderScore();
+	}
+	showNextBox() {
+		let self = this;
 
-			self.menu.hide();
-			self.game.show();
-		},
-
-		Frame: (clear = false) => {
-			let self = this;
-			if (clear) {
-				Utils.clear(self.MapNode);
-			} else {
-				let tmpElements = document.querySelectorAll(`#${IDs.tmpPoint}`);
-				tmpElements.forEach(ele => {
-					ele.remove();
-				});
-			}
-			let currentElements = self.GenerateEle.byBox(self.Boxs.current, IDs.tmpPoint, true);
-
-			Utils.render(self.MapNode, currentElements);
-		},
-
-		nextBox: () => {
-			let self = this;
-
-			if (self.Boxs.next) {
-				let nextBoxElement = Utils.id(IDs.nextBox);
-				let elements = self.GenerateEle.byBox(self.Boxs.next, IDs.nextBox, false);
-				Utils.render(nextBoxElement, elements, true);
-			}
-		},
-	};
+		if (self.Boxs.next) {
+			let nextBoxElement = Utils.id(IDs.nextBox);
+			let elements = self.GenerateEle.byBox(self.Boxs.next, IDs.nextBox, false);
+			Utils.render(nextBoxElement, elements, true);
+		}
+	}
 	Boxs = {
 		current: undefined,
 
@@ -166,11 +192,11 @@ class GameController {
 
 		randomNext: () => {
 			this.Boxs.current = this.Boxs.next || null;
-			this.Boxs.next = FRandom.PickRandomBox();
-			this.Render.nextBox();
+			this.Boxs.next = new TetrisBox.I("red"); //FRandom.PickRandomBox();
+			this.showNextBox();
 		},
 
-		move: (isX = false, num = 1) => {
+		moveCurrent: (isX = false, num = 1) => {
 			let self = this;
 			let current = self.Boxs.current;
 			if (current) {
@@ -178,28 +204,47 @@ class GameController {
 				let currentPosition = current.getMapPosition();
 				if (self.GameMap.checkPosition(points)) {
 					current.updateMapPosition();
-					self.Render.Frame();
+					self.renderFrame();
 				} else if (!isX) {
 					self.GameMap.applyPoints(current.getActivePoints());
 					if (currentPosition.Y === 0) {
 						self.TetrisGame.end();
 					} else {
+						self.GameMap.checkScore();
 						self.Boxs.randomNext();
 					}
 				}
 			}
 		},
 
-		rotate: () => {
+		rotateCurrent: () => {
 			let self = this;
 			let points = self.Boxs.current.rotate();
 			if (self.GameMap.checkPosition(points)) {
 				self.Boxs.current.updateActivePoints(points);
-				self.Render.Frame();
+				self.renderFrame();
 			}
 		},
 	};
 	GameMap = {
+		clearLine: line => {},
+		checkScore: () => {
+			let self = this;
+			if (self.map) {
+				let maxWidth = self.config.getMapSize().height;
+				let pointActives = 0;
+				let lineChecking = maxWidth;
+				for (let Y = maxWidth - 1; Y >= 0; Y--) {
+					if (self.map.lineIsFull(Y)) {
+						self.map.clearLine(Y);
+						self.Player.setScore();
+						self.renderFrame(true);
+						Y++;
+					}
+				}
+			}
+		},
+
 		checkPosition: points => {
 			let self = this;
 			let canMove = true;
@@ -274,6 +319,17 @@ class GameController {
 			};
 		},
 	};
+	Test() {
+		let points = [];
+		for (let Y = 20; Y < 25; Y++) {
+			for (let i = 3; i < 15; i++) {
+				points.push(new Point(i, Y, true, "red"));
+			}
+		}
+		this.GameMap.applyPoints(points);
+		this.Boxs.randomNext();
+		this.Boxs.randomNext();
+	}
 }
 
 export default GameController;

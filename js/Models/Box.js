@@ -58,6 +58,7 @@ class Box {
 	getPoint(X, Y) {
 		return this.map[X]?.[Y] || undefined;
 	}
+
 	isNull(X, Y) {
 		return this.getPoint(X, Y) ? false : true;
 	}
