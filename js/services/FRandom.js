@@ -37,5 +37,11 @@ class FRandom {
 		}
 		return selectBox;
 	}
+	static Background() {
+		let deg = new Date().getHours() * 10;
+		let primaryColor = this.Color();
+		let secondaryColor = this.Color();
+		return `linear-gradient(${deg}deg,${primaryColor},${secondaryColor})`;
+	}
 }
 export default FRandom;

@@ -9,13 +9,13 @@ export const CName = {
 	infoContainer: "info-container",
 	infoDesc: "info-desc",
 	infoContent: "info-content",
-	nextBoxContent: "info-next-box",
 
 	overContainer: "game-over",
 	overTitle: "over-title",
 	overDesc: "over-desc",
 	overContent: "over-content",
 
+	background: "game-bg",
 	title: "title",
 };
 export const IDs = {
@@ -28,6 +28,7 @@ export const IDs = {
 	menuHelloString: "lbHello",
 	menuStartBtn: "btnStart",
 	mapContainer: "mapContainer",
+	nextBoxContainer: "nextBoxContainer",
 	lbScore: "lbScore",
 	lbUsername: "lbUsername",
 	lbHello: "lbHello",

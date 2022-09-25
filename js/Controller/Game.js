@@ -28,6 +28,7 @@ class GameController {
 	initVar() {
 		let self = this;
 		self.RootNode = Utils.id(IDs.root);
+		self.setupBackground();
 		if (!self.RootNode) {
 			console.error("cant Find Root Node");
 			return;
@@ -42,34 +43,51 @@ class GameController {
 		this.Player = new Player();
 		this.timer = null;
 	}
+	setupBackground() {
+		let background = Utils.dom("div", {
+			className: CName.background,
+			parent: this.RootNode,
+		});
+		let linearBG = Utils.dom("div", {
+			className: CName.background,
+			parent: background,
+		});
+		Utils.setStyle(linearBG, {
+			backgroundImage: FRandom.Background(),
+			opacity: 0.5,
+		});
+		Utils.setStyle(background, {
+			backgroundColor: "gray",
+			opacity: 0.5,
+		});
+	}
 	TetrisGame = {
 		init: () => {
 			let self = this;
 
-			self.TetrisGame.setSizeNextBox(0);
+			self.TetrisGame.setSizeNextBox();
 			self.TetrisGame.setupButtonStart();
 			self.TetrisGame.setupKeyBoard();
 			self.Player.setLose(true);
 			self.showMenu();
 		},
 
-		setSizeNextBox: pointNumber => {
+		setSizeNextBox: () => {
 			let self = this;
 
-			let pointSize = self.config.getPointSize();
+			let pointSize = self.config.PointSize;
 			let ENextBox = Utils.id(IDs.nextBox);
-
 			Utils.setStyle(ENextBox, {
-				with: pointSize * (5 - pointNumber),
-				height: pointSize * (5 - pointNumber),
+				width: pointSize * 5,
+				height: pointSize * 5,
 			});
 		},
 
 		setupGameMap: () => {
 			let self = this;
 			Utils.clear(self.MapNode);
-			Utils.setStyle(self.MapNode, self.config.getGameSize());
-			let mapSize = self.config.getMapSize();
+			Utils.setStyle(self.MapNode, self.config.GameSize);
+			let mapSize = self.config.MapSize;
 			self.map = new GameMap({
 				width: mapSize.width,
 				height: mapSize.height,
@@ -131,9 +149,11 @@ class GameController {
 					self.Player.setName(playerName);
 				}
 			} else if (localPlayerName !== playerName) {
-				localStorage.remove(LocalVar.username);
+				localStorage.removeItem(LocalVar.username);
 				localStorage.setItem(LocalVar.username, playerName);
 			}
+			Utils.setText(IDs.lbUsername, playerName);
+
 			//setup TestZone
 			if (self.debugMode) {
 				self.DeBug.Test();
@@ -148,7 +168,9 @@ class GameController {
 			}
 			self.timer = setInterval(() => {
 				self.Boxs.moveCurrent(false, 1);
-			}, self.config.getDelay());
+			}, self.config.Delay);
+
+			self.Boxs.moveCurrent(false, 1);
 		},
 		end: () => {
 			let self = this;
@@ -209,7 +231,7 @@ class GameController {
 
 		if (self.Boxs.next) {
 			let nextBoxElement = Utils.id(IDs.nextBox);
-			let elements = self.GenerateEle.byBox(self.Boxs.next, IDs.nextBox, false);
+			let elements = self.GenerateEle.byBox(self.Boxs.next, IDs.nextBox, false, false);
 			Utils.render(nextBoxElement, elements, true);
 		}
 	}
@@ -260,7 +282,7 @@ class GameController {
 		checkScore: () => {
 			let self = this;
 			if (self.map) {
-				let maxWidth = self.config.getMapSize().height;
+				let maxWidth = self.config.MapSize.height;
 				let pointActives = 0;
 				let lineChecking = maxWidth;
 				for (let Y = maxWidth - 1; Y >= 0; Y--) {
@@ -277,7 +299,7 @@ class GameController {
 		checkPosition: points => {
 			let self = this;
 			let canMove = true;
-			let mapSize = self.config.getMapSize();
+			let mapSize = self.config.MapSize;
 			points.every(item => {
 				let position = item.getPosition();
 
@@ -296,16 +318,12 @@ class GameController {
 
 			let position = item.getPosition();
 			let id = isTmp ? subID : `${subID}${position.X}-${position.Y}`;
-			let ele = Utils.id(id);
-			if (!ele || reRender) {
-				let element = Utils.dom("span", {
-					className: [CName.point, isTmp ? CName.tmpPoint : CName.activePoint],
-					id,
-				});
-				Utils.setStyle(element, self.GenerateEle.PointStyle(item));
-				return element;
-			}
-			return null;
+			let element = Utils.dom("span", {
+				className: [CName.point, isTmp ? CName.tmpPoint : CName.activePoint],
+				id,
+			});
+			Utils.setStyle(element, self.GenerateEle.PointStyle(item));
+			return element;
 		},
 
 		byBox: (box, subID = "map", isTmp = false, reRender = false) => {
@@ -326,7 +344,7 @@ class GameController {
 
 		PointStyle: item => {
 			let self = this;
-			let pointSize = self.config.getPointSize();
+			let pointSize = self.config.PointSize;
 			let position = item.getPosition();
 			return {
 				backgroundColor: item.getColor(),
@@ -339,11 +357,10 @@ class GameController {
 	};
 	DeBug = {
 		Test: () => {
-			//
 			for (let Y = 20; Y < 25; Y++) {
 				this.DeBug.setPoint(Y, 3, 15);
 			}
-
+			this.renderFrame(true);
 			this.DeBug.spawBox(TetrisBox.L);
 			this.DeBug.spawBox(TetrisBox.L);
 		},

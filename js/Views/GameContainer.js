@@ -49,6 +49,7 @@ class GameContainer extends Container {
 			}).getContainer(),
 
 			nextBoxNode: new InfoContainer({
+				parentID: IDs.nextBoxContainer,
 				id: IDs.nextBox,
 				desc: EContent.descNextBox,
 				child: Utils.dom("div", {}),

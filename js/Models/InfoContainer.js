@@ -9,6 +9,9 @@ class InfoContainer extends Container {
 		super({
 			className: CName.infoContainer,
 		});
+		if (params.parentID) {
+			this.container.id = params.parentID;
+		}
 		let elements = this.initElements(params);
 		Utils.appendChildrens(this.container, elements);
 	}

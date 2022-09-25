@@ -13,20 +13,21 @@ class Config {
 			},
 		};
 	}
-	getPointSize() {
+	get PointSize() {
 		return this.options.pointSize;
 	}
-	getMapSize() {
+	get MapSize() {
 		return this.options.map;
 	}
-	getDelay() {
+	get Delay() {
 		return this.options.game.delay;
 	}
-	getGameSize() {
+	get GameSize() {
 		return {
-			width: this.getPointSize() * this.getMapSize().width + "px",
-			height: this.getPointSize() * this.getMapSize().height + "px",
+			width: this.PointSize * this.MapSize.width + "px",
+			height: this.PointSize * this.MapSize.height + "px",
 		};
 	}
+	get infoContainerSize() {}
 }
 export default Config;
