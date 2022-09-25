@@ -74,6 +74,7 @@ button {
 	float: left;
 	text-align: left;
 	border: var(--border);
+	background-color: rgb(126, 121, 121, 0.4);
 }
 
 .game-info {
@@ -103,4 +104,12 @@ button {
 }
 #nextBoxContainer {
 	height: 15rem;
+}
+
+.footer-container {
+	text-align: right;
+	font-size: 1rem;
+	position: absolute;
+	bottom: 3rem;
+	right: 3rem;
 }

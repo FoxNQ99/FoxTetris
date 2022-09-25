@@ -10,7 +10,7 @@ class GameContainer extends Container {
 	constructor() {
 		super({
 			className: CName.gameContainer,
-			parent: Utils.qs(`#${IDs.root}`),
+			parent: Utils.id(IDs.root),
 		});
 		this.elements = this.initElements();
 		this.applyElements();

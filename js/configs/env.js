@@ -17,6 +17,9 @@ export const CName = {
 
 	background: "game-bg",
 	title: "title",
+
+	footerContainer: "footer-container",
+	footerDesc: "footer-desc",
 };
 export const IDs = {
 	map: "map",

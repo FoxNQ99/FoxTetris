@@ -16,6 +16,7 @@ import TetrisBox from "../Models/TetrisBoxs.js";
 import GameMap from "../Models/GameMap.js";
 import { Color } from "../services/Color.js";
 import GameOver from "../Views/GameOver.js";
+import Footer from "../Views/Footer.js";
 
 ("use strict");
 
@@ -37,6 +38,8 @@ class GameController {
 		self.menu = new MenuContainer();
 		self.game = new GameContainer();
 		self.overScreen = new GameOver();
+		self.footer = new Footer();
+		self.footer.show();
 
 		self.map = null;
 		self.MapNode = Utils.id(IDs.mapContainer);
