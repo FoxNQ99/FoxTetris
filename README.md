@@ -47,3 +47,5 @@ i want try my coding skills with Tetris Game, this project will use vanilla Fron
 </details>
 
 # TodoList
+
+- Switch Render by Canvas
